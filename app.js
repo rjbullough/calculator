@@ -1,73 +1,58 @@
 const display = document.querySelector(".input-display");
-let operatorInUse, op1, op2, previousString
-function add(num1, num2) {
-  return num1 + num2;
+const numberButton = document.querySelectorAll(".button");
+const operatorButton = document.querySelectorAll(".operator");
+let operationMemory = [];
+let regex = /[\+\-\*\÷]/g;
+function calc(num1, num2, operator) {
+  num1 = Number.parseFloat(num1);
+  num2 = Number.parseFloat(num2);
+  const calculations = {
+    "+": (a, b) => a + b,
+    "-": (a, b) => a - b,
+    x: (a, b) => a * b,
+    "÷": (a, b) => (b ? a / b : "ERROR"),
+  };
+  operationMemory[0] = calculations[operator](num1, num2);
+  operationMemory[2] = undefined;
+  return operationMemory[0] === "ERROR"
+    ? "ERROR"
+    : Math.floor(operationMemory[0])
+      ? operationMemory[0]
+      : operationMemory[0].toFixed(2);
 }
-function subtract(num1, num2) {
-  return num1 - num2;
-}
-function multiply(num1, num2) {
-  return num1 * num2;
-}
-function divide(num1, num2) {
-  if (num2) {
-    return num1 / num2;
-  } else {
-    return `ERROR`;
+function updateDisplay(e) {
+  if (display.textContent === "0") display.textContent = "";
+  display.textContent += `${e.target.textContent}`;
+  if (!operationMemory[1]) operationMemory[0] = display.textContent;
+  if ((typeof operationMemory[0] === "number" || typeof operationMemory[0] === "string") && operationMemory[1]) {
+    operationMemory[2] = display.textContent.slice(display.textContent.indexOf(operationMemory[1]) + 2);
   }
 }
-function operate(operator, num1, num2) {
-  let result;
-  switch (operator) {
-    case "+": result = add(num1, num2); break;
-    case "-": result = subtract(num1, num2); break;
-    case "x": result = multiply(num1, num2); break;
-    case "÷": result = divide(num1, num2); break;
+function operatorPressed(f) {
+  if (typeof operationMemory[2] === "string") {
+    updateHistory()
+    calc(operationMemory[0], operationMemory[2], operationMemory[1]);
+    addResultToHistory()
   }
-  op1 = result;
-  return result === Math.floor(result) ? result : result.toFixed(2)
+  operationMemory[1] = f.target.textContent;
+  operationMemory[1] === "="
+    ? (display.textContent = `${operationMemory[0]} `)
+    : (display.textContent = `${operationMemory[0]} ${operationMemory[1]} `);
 }
-function numberPressed() {
-  const button = document.querySelectorAll(".button");
-  button.forEach((button) => {
-    button.addEventListener("click", function () {
-      if (display.textContent === "0") display.textContent = "";
-      display.textContent += button.textContent;
-    });
-  });
-}
-function operatorPressed() {
-  const operator = document.querySelectorAll(".operator");
-  operator.forEach((operator) => {
-    operator.addEventListener("click", function (e) {
-      if (typeof (op1) !== 'number') {
-        display.textContent += e.target.textContent
-        operatorInUse = e.target.textContent
-        op1 = +display.textContent.slice(0, display.textContent.indexOf(operatorInUse))
-      }
-      if (typeof (op1) === 'number' && display.textContent.slice(display.textContent.indexOf(operatorInUse) + 1).length > 0) {
-        op2 = +display.textContent.slice(display.textContent.indexOf(operatorInUse) + 1)
-      } else {
-        operatorInUse = e.target.textContent
-        display.textContent = `${op1}${operatorInUse}`
-      }
-      if (typeof (op1) === 'number' && typeof (op2) === 'number') {
-        updateHistory()
-        display.textContent = `${op1.toFixed(2)}`
-        operatorInUse = e.target.textContent
-        display.textContent += e.target.textContent
-        op2 = ''
-      }
-    });
-  });
-};
-function updateHistory(e) {
-  previousString = `${op1} ${operatorInUse} ${op2} = ${operate(operatorInUse, op1, op2)}`
+function updateHistory() {
   const history = document.querySelector(".history");
   const newP = document.createElement("p");
   newP.style.cssText = "padding: 0.1em 0.2em";
-  newP.textContent = `${previousString}`;
+  newP.textContent = display.textContent;
   history.appendChild(newP);
 }
-numberPressed();
-operatorPressed();
+function addResultToHistory() {
+  const history = document.querySelector(".history");
+  history.lastChild.textContent += ` = ${operationMemory[0]}`
+}
+numberButton.forEach((button) => {
+  button.addEventListener("click", updateDisplay);
+});
+operatorButton.forEach((operator) => {
+  operator.addEventListener("click", operatorPressed);
+});
