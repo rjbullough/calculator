@@ -9,29 +9,32 @@
 </head>
 
 <body>
-  <h1>Calculator</h1>
   <main>
     <div class="history"></div>
     <div class="input-display">0</div>
     <div class="buttons">
-      <span class="button">7</span>
-      <span class="button">8</span>
-      <span class="button">9</span>
-      <span id="x" class="operator">x</span>
-      <span class="button">4</span>
-      <span class="button">5</span>
-      <span class="button">6</span>
-      <span id="/" class="operator">&#247;</span>
-      <span class="button">1</span>
-      <span class="button">2</span>
-      <span class="button">3</span>
-      <span id="+" class="operator">+</span>
-      <span id="decimal" class="button">.</span>
-      <span class="button">0</span>
-      <span id="equate" class="operator equals">=</span>
-      <span id="-" class="operator">-</span>
-      <span id="clear" class="clear">C</span>
-      <span id="negative-positive">+-</span>
+      <div class="button-wrapper">
+        <span class="button">7</span>
+        <span class="button">8</span>
+        <span class="button">9</span>
+        <span class="button">4</span>
+        <span class="button">5</span>
+        <span class="button">6</span>
+        <span class="button">1</span>
+        <span class="button">2</span>
+        <span class="button">3</span>
+        <span id="decimal" class="button">.</span>
+        <span class="button">0</span>
+        <span id="equate" class="operator equals">=</span>
+      </div>
+      <div class="operator-wrapper">
+        <span id="x" class="operator">x</span>
+        <span id="/" class="operator">&#247;</span>
+        <span id="+" class="operator">+</span>
+        <span id="-" class="operator">-</span>
+        <span id="negative-positive">&#177;</span>
+        <span id="clear" class="clear">C</span>
+      </div>
     </div>
   </main>
   <script src="app.js"></script>
